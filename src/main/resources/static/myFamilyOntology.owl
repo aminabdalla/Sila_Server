@@ -1,0 +1,249 @@
+<?xml version="1.0"?>
+
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY family "http://www.sila.com/family#" >
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+]>
+
+
+<rdf:RDF xmlns="http://www.sila.com/family#"
+     xml:base="http://www.sila.com/family"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:family="http://www.sila.com/family#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+    <owl:Ontology rdf:about="http://www.sila.com/family">
+        <rdfs:comment>An ontology describing basic family relationships between persons
+</rdfs:comment>
+    </owl:Ontology>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.sila.com/family#hasChild -->
+
+    <owl:ObjectProperty rdf:about="&family;hasChild">
+        <owl:inverseOf rdf:resource="&family;hasParent"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.sila.com/family#hasConsort -->
+
+    <owl:ObjectProperty rdf:about="&family;hasConsort">
+        <rdf:type rdf:resource="&owl;SymmetricProperty"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.sila.com/family#hasDaughter -->
+
+    <owl:ObjectProperty rdf:about="&family;hasDaughter">
+        <rdfs:subPropertyOf rdf:resource="&family;hasChild"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.sila.com/family#hasFather -->
+
+    <owl:ObjectProperty rdf:about="&family;hasFather">
+        <rdfs:subPropertyOf rdf:resource="&family;hasParent"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.sila.com/family#hasMother -->
+
+    <owl:ObjectProperty rdf:about="&family;hasMother">
+        <rdfs:subPropertyOf rdf:resource="&family;hasParent"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.sila.com/family#hasParent -->
+
+    <owl:ObjectProperty rdf:about="&family;hasParent"/>
+    
+
+
+    <!-- http://www.sila.com/family#hasSon -->
+
+    <owl:ObjectProperty rdf:about="&family;hasSon">
+        <rdfs:subPropertyOf rdf:resource="&family;hasChild"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.sila.com/family#Aunt -->
+
+    <owl:Class rdf:about="&family;Aunt">
+        <rdfs:subClassOf rdf:resource="&family;Relative"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.sila.com/family#Brother -->
+
+    <owl:Class rdf:about="&family;Brother">
+        <rdfs:subClassOf rdf:resource="&family;Sibling"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.sila.com/family#Child -->
+
+    <owl:Class rdf:about="&family;Child">
+        <rdfs:subClassOf rdf:resource="&family;Person"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.sila.com/family#Daughter -->
+
+    <owl:Class rdf:about="&family;Daughter">
+        <rdfs:subClassOf rdf:resource="&family;Child"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.sila.com/family#Father -->
+
+    <owl:Class rdf:about="&family;Father">
+        <rdfs:subClassOf rdf:resource="&family;Parent"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.sila.com/family#Man -->
+
+    <owl:Class rdf:about="&family;Man">
+        <owl:disjointWith rdf:resource="&family;Woman"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.sila.com/family#Mother -->
+
+    <owl:Class rdf:about="&family;Mother">
+        <rdfs:subClassOf rdf:resource="&family;Parent"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.sila.com/family#Parent -->
+
+    <owl:Class rdf:about="&family;Parent">
+        <rdfs:subClassOf rdf:resource="&family;Person"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.sila.com/family#Person -->
+
+    <owl:Class rdf:about="&family;Person"/>
+    
+
+
+    <!-- http://www.sila.com/family#Relative -->
+
+    <owl:Class rdf:about="&family;Relative">
+        <rdfs:subClassOf rdf:resource="&family;Person"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.sila.com/family#Sibling -->
+
+    <owl:Class rdf:about="&family;Sibling">
+        <rdfs:subClassOf rdf:resource="&family;Person"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.sila.com/family#Sister -->
+
+    <owl:Class rdf:about="&family;Sister">
+        <rdfs:subClassOf rdf:resource="&family;Sibling"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.sila.com/family#Son -->
+
+    <owl:Class rdf:about="&family;Son">
+        <rdfs:subClassOf rdf:resource="&family;Child"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.sila.com/family#Uncle -->
+
+    <owl:Class rdf:about="&family;Uncle">
+        <rdfs:subClassOf rdf:resource="&family;Relative"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.sila.com/family#Woman -->
+
+    <owl:Class rdf:about="&family;Woman"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Individuals
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.sila.com/family#AhmadAbdalla -->
+
+    <owl:NamedIndividual rdf:about="&family;AhmadAbdalla">
+        <rdf:type rdf:resource="&family;Father"/>
+        <hasSon rdf:resource="&family;AminAbdalla"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.sila.com/family#AminAbdalla -->
+
+    <owl:NamedIndividual rdf:about="&family;AminAbdalla">
+        <rdf:type rdf:resource="&family;Son"/>
+    </owl:NamedIndividual>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 3.4.2) http://owlapi.sourceforge.net -->
+
