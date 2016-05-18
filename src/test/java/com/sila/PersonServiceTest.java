@@ -55,9 +55,7 @@ public class PersonServiceTest {
 	}
 
 	private void givenAPerson() {
-		person = new Person();
-		person.setKey(PERSON_KEY);
-		person.setName(PERSON_NAME);
+		person = new Person.PersonBuilder(PERSON_KEY).withName(PERSON_NAME).build();
 	}
 
 	private void thenReturnedResultIsSuccessAndPersonObjectIsReturned() {

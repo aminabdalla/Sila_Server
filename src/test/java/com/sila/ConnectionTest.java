@@ -1,31 +1,54 @@
 package com.sila;
 
+
+
+import org.apache.jena.rdf.model.Model;
+import org.openrdf.query.GraphQueryResult;
+import org.openrdf.query.QueryLanguage;
+import org.openrdf.query.QueryResults;
+import org.openrdf.query.TupleQuery;
+import org.openrdf.repository.Repository;
+import org.openrdf.repository.RepositoryConnection;
+import org.quartz.jobs.ee.jms.SendDestinationMessageJob;
+
 import com.complexible.stardog.StardogException;
 import com.complexible.stardog.api.Connection;
 import com.complexible.stardog.api.ConnectionConfiguration;
+import com.complexible.stardog.api.GraphQuery;
+import com.complexible.stardog.sesame.StardogRepository;
+
+
 
 public class ConnectionTest {
 
 	public static void main(final String[] args) {
 		final String server = "snarl://localhost:5820/";
 		try {
-			final Connection aConn = ConnectionConfiguration.to("Persons")
-					.server(server).credentials("admin", "admin").connect();
+//			final Connection aConn = ConnectionConfiguration.to("myFamily")
+//					.credentials("admin", "admin")
+//					.server(server)
+//					.connect();
+			
+			//aConn.begin();
+			
+//			GraphQuery gq = aConn.graph("select * where {?s a <http://www.sila.com/family#Child>}");
+//			GraphQueryResult gqr = gq.execute();
+			Repository repo = new StardogRepository(ConnectionConfiguration.to("myFamily")
+					.credentials("admin", "admin")
+					.server(server));
+			repo.initialize();
 
-			aConn.begin();
+			// now you can use it like a normal Sesame Repository
+			RepositoryConnection aRepoConn = repo.getConnection();
 
-			// aConn.add().io().format(RDFFormat.TURTLE)
-			// .stream(new FileInputStream("data/sp2b_10k.n3"));
-			//
-			// final Model aGraph = Models2.newModel(Values.statement(
-			// Values.iri("urn:subj"), Values.iri("urn:pred"),
-			// Values.iri("urn:obj")));
-			//
-			// final Resource aContext = Values.iri("urn:test:context");
-			//
-			// aConn.add().graph(aGraph, aContext);
-
-			aConn.commit();
+			// always best to turn off auto commit
+			aRepoConn.setAutoCommit(false);
+			
+			org.openrdf.query.GraphQuery gq = aRepoConn.prepareGraphQuery(QueryLanguage.SPARQL, "select * where {?s a <http://www.sila.com/family#Child>}");
+			GraphQueryResult gqr = gq.evaluate();
+			QueryResults.stream(gqr).forEach(s -> System.out.println(s.getSubject().stringValue()));
+			
+			//aConn.commit();
 
 		} catch (final StardogException e) {
 			// TODO Auto-generated catch block

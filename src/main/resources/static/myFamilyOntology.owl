@@ -37,9 +37,7 @@
 
     <!-- http://www.sila.com/family#hasChild -->
 
-    <owl:ObjectProperty rdf:about="&family;hasChild">
-        <owl:inverseOf rdf:resource="&family;hasParent"/>
-    </owl:ObjectProperty>
+    <owl:ObjectProperty rdf:about="&family;hasChild"/>
     
 
 
@@ -59,25 +57,44 @@
     
 
 
-    <!-- http://www.sila.com/family#hasFather -->
+    <!-- http://www.sila.com/family#hasDirectSibling -->
 
-    <owl:ObjectProperty rdf:about="&family;hasFather">
-        <rdfs:subPropertyOf rdf:resource="&family;hasParent"/>
+    <owl:ObjectProperty rdf:about="&family;hasDirectSibling">
+        <rdf:type rdf:resource="&owl;SymmetricProperty"/>
+        <rdfs:subPropertyOf rdf:resource="&family;hasSibling"/>
     </owl:ObjectProperty>
     
 
 
-    <!-- http://www.sila.com/family#hasMother -->
+    <!-- http://www.sila.com/family#hasGrandChild -->
 
-    <owl:ObjectProperty rdf:about="&family;hasMother">
-        <rdfs:subPropertyOf rdf:resource="&family;hasParent"/>
+    <owl:ObjectProperty rdf:about="&family;hasGrandChild">
+        <owl:propertyChainAxiom rdf:parseType="Collection">
+            <rdf:Description rdf:about="&family;hasChild"/>
+            <rdf:Description rdf:about="&family;hasChild"/>
+        </owl:propertyChainAxiom>
     </owl:ObjectProperty>
     
 
 
-    <!-- http://www.sila.com/family#hasParent -->
+    <!-- http://www.sila.com/family#hasNephew -->
 
-    <owl:ObjectProperty rdf:about="&family;hasParent"/>
+    <owl:ObjectProperty rdf:about="&family;hasNephew"/>
+    
+
+
+    <!-- http://www.sila.com/family#hasNiece -->
+
+    <owl:ObjectProperty rdf:about="&family;hasNiece"/>
+    
+
+
+    <!-- http://www.sila.com/family#hasSibling -->
+
+    <owl:ObjectProperty rdf:about="&family;hasSibling">
+        <rdf:type rdf:resource="&owl;SymmetricProperty"/>
+        <rdf:type rdf:resource="&owl;TransitiveProperty"/>
+    </owl:ObjectProperty>
     
 
 
@@ -85,6 +102,56 @@
 
     <owl:ObjectProperty rdf:about="&family;hasSon">
         <rdfs:subPropertyOf rdf:resource="&family;hasChild"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.sila.com/family#isChildOf -->
+
+    <owl:ObjectProperty rdf:about="&family;isChildOf">
+        <owl:inverseOf rdf:resource="&family;hasChild"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.sila.com/family#isDaughterOf -->
+
+    <owl:ObjectProperty rdf:about="&family;isDaughterOf">
+        <owl:inverseOf rdf:resource="&family;hasDaughter"/>
+        <rdfs:subPropertyOf rdf:resource="&family;isChildOf"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.sila.com/family#isNephewOf -->
+
+    <owl:ObjectProperty rdf:about="&family;isNephewOf">
+        <owl:inverseOf rdf:resource="&family;hasNephew"/>
+        <owl:propertyChainAxiom rdf:parseType="Collection">
+            <rdf:Description rdf:about="&family;isSonOf"/>
+            <rdf:Description rdf:about="&family;hasSibling"/>
+        </owl:propertyChainAxiom>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.sila.com/family#isNieceOf -->
+
+    <owl:ObjectProperty rdf:about="&family;isNieceOf">
+        <owl:inverseOf rdf:resource="&family;hasNiece"/>
+        <owl:propertyChainAxiom rdf:parseType="Collection">
+            <rdf:Description rdf:about="&family;isDaughterOf"/>
+            <rdf:Description rdf:about="&family;hasDirectSibling"/>
+        </owl:propertyChainAxiom>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.sila.com/family#isSonOf -->
+
+    <owl:ObjectProperty rdf:about="&family;isSonOf">
+        <owl:inverseOf rdf:resource="&family;hasSon"/>
+        <rdfs:subPropertyOf rdf:resource="&family;isChildOf"/>
     </owl:ObjectProperty>
     
 
@@ -119,7 +186,19 @@
     <!-- http://www.sila.com/family#Child -->
 
     <owl:Class rdf:about="&family;Child">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&family;isChildOf"/>
+                <owl:someValuesFrom rdf:resource="&family;Person"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
         <rdfs:subClassOf rdf:resource="&family;Person"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&family;isChildOf"/>
+                <owl:allValuesFrom rdf:resource="&family;Person"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
     </owl:Class>
     
 
@@ -127,7 +206,14 @@
     <!-- http://www.sila.com/family#Daughter -->
 
     <owl:Class rdf:about="&family;Daughter">
-        <rdfs:subClassOf rdf:resource="&family;Child"/>
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&family;Child"/>
+                    <rdf:Description rdf:about="&family;Female"/>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
     </owl:Class>
     
 
@@ -135,22 +221,30 @@
     <!-- http://www.sila.com/family#Father -->
 
     <owl:Class rdf:about="&family;Father">
+        <rdfs:subClassOf rdf:resource="&family;Male"/>
         <rdfs:subClassOf rdf:resource="&family;Parent"/>
     </owl:Class>
     
 
 
-    <!-- http://www.sila.com/family#Man -->
+    <!-- http://www.sila.com/family#Female -->
 
-    <owl:Class rdf:about="&family;Man">
-        <owl:disjointWith rdf:resource="&family;Woman"/>
+    <owl:Class rdf:about="&family;Female">
+        <owl:disjointWith rdf:resource="&family;Male"/>
     </owl:Class>
+    
+
+
+    <!-- http://www.sila.com/family#Male -->
+
+    <owl:Class rdf:about="&family;Male"/>
     
 
 
     <!-- http://www.sila.com/family#Mother -->
 
     <owl:Class rdf:about="&family;Mother">
+        <rdfs:subClassOf rdf:resource="&family;Female"/>
         <rdfs:subClassOf rdf:resource="&family;Parent"/>
     </owl:Class>
     
@@ -159,7 +253,19 @@
     <!-- http://www.sila.com/family#Parent -->
 
     <owl:Class rdf:about="&family;Parent">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&family;hasChild"/>
+                <owl:someValuesFrom rdf:resource="&family;Person"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
         <rdfs:subClassOf rdf:resource="&family;Person"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&family;hasChild"/>
+                <owl:allValuesFrom rdf:resource="&family;Person"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
     </owl:Class>
     
 
@@ -197,7 +303,34 @@
     <!-- http://www.sila.com/family#Son -->
 
     <owl:Class rdf:about="&family;Son">
-        <rdfs:subClassOf rdf:resource="&family;Child"/>
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&family;Child"/>
+                    <rdf:Description rdf:about="&family;Male"/>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+    </owl:Class>
+    
+
+
+    <!-- http://www.sila.com/family#Spouse -->
+
+    <owl:Class rdf:about="&family;Spouse">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&family;hasConsort"/>
+                <owl:someValuesFrom rdf:resource="&family;Person"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&family;Person"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&family;hasConsort"/>
+                <owl:allValuesFrom rdf:resource="&family;Person"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
     </owl:Class>
     
 
@@ -207,12 +340,6 @@
     <owl:Class rdf:about="&family;Uncle">
         <rdfs:subClassOf rdf:resource="&family;Relative"/>
     </owl:Class>
-    
-
-
-    <!-- http://www.sila.com/family#Woman -->
-
-    <owl:Class rdf:about="&family;Woman"/>
     
 
 
@@ -230,7 +357,8 @@
     <!-- http://www.sila.com/family#AhmadAbdalla -->
 
     <owl:NamedIndividual rdf:about="&family;AhmadAbdalla">
-        <rdf:type rdf:resource="&family;Father"/>
+        <rdf:type rdf:resource="&family;Male"/>
+        <rdf:type rdf:resource="&family;Person"/>
         <hasSon rdf:resource="&family;AminAbdalla"/>
     </owl:NamedIndividual>
     
@@ -239,7 +367,50 @@
     <!-- http://www.sila.com/family#AminAbdalla -->
 
     <owl:NamedIndividual rdf:about="&family;AminAbdalla">
-        <rdf:type rdf:resource="&family;Son"/>
+        <rdf:type rdf:resource="&family;Male"/>
+        <rdf:type rdf:resource="&family;Person"/>
+        <hasConsort rdf:resource="&family;SarahAbdelRahman"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.sila.com/family#HabibaAbdalla -->
+
+    <owl:NamedIndividual rdf:about="&family;HabibaAbdalla">
+        <rdf:type rdf:resource="&family;Female"/>
+        <rdf:type rdf:resource="&family;Person"/>
+        <isDaughterOf rdf:resource="&family;AminAbdalla"/>
+        <isDaughterOf rdf:resource="&family;SarahAbdelRahman"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.sila.com/family#SalmaAbdalla -->
+
+    <owl:NamedIndividual rdf:about="&family;SalmaAbdalla">
+        <rdf:type rdf:resource="&family;Female"/>
+        <rdf:type rdf:resource="&family;Person"/>
+        <hasDirectSibling rdf:resource="&family;AminAbdalla"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.sila.com/family#SarahAbdelRahman -->
+
+    <owl:NamedIndividual rdf:about="&family;SarahAbdelRahman">
+        <rdf:type rdf:resource="&family;Female"/>
+        <rdf:type rdf:resource="&family;Person"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.sila.com/family#YumnaAbdalla -->
+
+    <owl:NamedIndividual rdf:about="&family;YumnaAbdalla">
+        <rdf:type rdf:resource="&family;Female"/>
+        <rdf:type rdf:resource="&family;Person"/>
+        <isDaughterOf rdf:resource="&family;AminAbdalla"/>
+        <isDaughterOf rdf:resource="&family;SarahAbdelRahman"/>
     </owl:NamedIndividual>
 </rdf:RDF>
 

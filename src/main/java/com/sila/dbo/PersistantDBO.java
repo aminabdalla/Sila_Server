@@ -2,7 +2,7 @@ package com.sila.dbo;
 
 import com.sila.dao.DBO;
 
-public class PersitantDBO implements DBO {
+public class PersistantDBO implements DBO {
 
 	private String key;
 
