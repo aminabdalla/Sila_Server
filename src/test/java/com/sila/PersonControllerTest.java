@@ -26,7 +26,7 @@ public class PersonControllerTest {
 	@Test
 	public void getHello() throws Exception {
 		mvc.perform(
-				MockMvcRequestBuilders.get("/").accept(
+				MockMvcRequestBuilders.get("/Person").accept(
 						MediaType.APPLICATION_JSON))
 						.andExpect(MockMvcResultMatchers.status().isOk())
 						.andExpect(
