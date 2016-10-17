@@ -62,20 +62,7 @@ public class IOResult<E, R> {
 		this.result = result;
 	}
 
-	/**
-	 * Indicates whether some other object is "equal to" this Optional. The
-	 * other object is considered equal if:
-	 * <ul>
-	 * <li>it is also an {@code Optional} and;
-	 * <li>both instances have no value present or;
-	 * <li>the present values are "equal to" each other via {@code equals()}.
-	 * </ul>
-	 *
-	 * @param obj
-	 *            an object to be tested for equality
-	 * @return {code true} if the other object is "equal to" this object
-	 *         otherwise {@code false}
-	 */
+
 	@Override
 	public boolean equals(final Object obj) {
 		if (this == obj) {
@@ -90,19 +77,6 @@ public class IOResult<E, R> {
 		return Objects.equals(result, other.result);
 	}
 
-	/**
-	 * If a value is present, and the value matches the given predicate, return
-	 * an {@code Optional} describing the value, otherwise return an empty
-	 * {@code Optional}.
-	 *
-	 * @param predicate
-	 *            a predicate to apply to the value, if present
-	 * @return an {@code Optional} describing the value of this {@code Optional}
-	 *         if a value is present and the value matches the given predicate,
-	 *         otherwise an empty {@code Optional}
-	 * @throws NullPointerException
-	 *             if the predicate is null
-	 */
 	public IOResult<E, R> filter(final Predicate<? super R> predicate,
 			final E error) {
 		Objects.requireNonNull(predicate);
@@ -112,25 +86,6 @@ public class IOResult<E, R> {
 			return predicate.test(result) ? this : error(error);
 	}
 
-	/**
-	 * If a value is present, apply the provided {@code Optional}-bearing
-	 * mapping function to it, return that result, otherwise return an empty
-	 * {@code Optional}. This method is similar to {@link #map(Function)}, but
-	 * the provided mapper is one whose result is already an {@code Optional},
-	 * and if invoked, {@code flatMap} does not wrap it with an additional
-	 * {@code Optional}.
-	 *
-	 * @param <U>
-	 *            The type parameter to the {@code Optional} returned by
-	 * @param mapper
-	 *            a mapping function to apply to the value, if present the
-	 *            mapping function
-	 * @return the result of applying an {@code Optional}-bearing mapping
-	 *         function to the value of this {@code Optional}, if a value is
-	 *         present, otherwise an empty {@code Optional}
-	 * @throws NullPointerException
-	 *             if the mapping function is null or returns a null result
-	 */
 	public <U> IOResult<E, U> flatMap(
 			final Function<? super R, IOResult<E, U>> mapper) {
 		Objects.requireNonNull(mapper);
@@ -141,16 +96,6 @@ public class IOResult<E, R> {
 		}
 	}
 
-	/**
-	 * If a value is present in this {@code Optional}, returns the value,
-	 * otherwise throws {@code NoSuchElementException}.
-	 *
-	 * @return the non-null value held by this {@code Optional}
-	 * @throws NoSuchElementException
-	 *             if there is no value present
-	 *
-	 * @see Optional#isPresent()
-	 */
 	public R getResult() {
 		if (result == null) {
 			throw new NoSuchElementException("No value present");

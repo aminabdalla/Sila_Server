@@ -14,6 +14,8 @@ import com.sila.dbo.Person;
 import com.sila.service.DefaultPersonService;
 import com.sila.utils.IOResult;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @RunWith(MockitoJUnitRunner.class)
 public class PersonServiceTest {
 
@@ -27,6 +29,7 @@ public class PersonServiceTest {
 
 	@Before
 	public void setUp() {
+		person = new Person(PERSON_KEY);
 		personService = new DefaultPersonService(personDao);
 	}
 
@@ -44,8 +47,27 @@ public class PersonServiceTest {
 		thenReturnedResultIsInError();
 	}
 
+	@Test
+	public void getPersonSuccessTest(){
+		givenAPersonExistsInDB();
+		whenPersonIsQueriedFor();
+		thenPersonIsReturnedSuccessfully();
+	}
+
+	private void thenPersonIsReturnedSuccessfully() {
+		assertThat(result.getResult()).isEqualTo(person);
+	}
+
+	private void whenPersonIsQueriedFor() {
+		result = personService.read(person.getUri());
+	}
+
+	private void givenAPersonExistsInDB() {
+		Mockito.when(personDao.read(Mockito.anyString())).thenReturn(IOResult.success(person));
+	}
+
 	private void thenReturnedResultIsInError() {
-		MatcherAssert.assertThat(result.isSuccess(), Matchers.is(false));
+		assertThat(result.isSuccess()).isFalse();
 	}
 
 	private void whenPersonIsInsertedWithAnError() {
@@ -55,7 +77,7 @@ public class PersonServiceTest {
 	}
 
 	private void givenAPerson() {
-		person = new Person.PersonBuilder(PERSON_KEY).withName(PERSON_NAME).build();
+		person = new Person(PERSON_NAME);
 	}
 
 	private void thenReturnedResultIsSuccessAndPersonObjectIsReturned() {

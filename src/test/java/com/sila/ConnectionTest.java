@@ -1,12 +1,12 @@
 package com.sila;
 
 
-
+import com.complexible.common.base.Options;
+import com.complexible.stardog.api.SelectQuery;
+import com.sila.dao.Transactional;
+import com.sila.utils.IOResult;
 import org.apache.jena.rdf.model.Model;
-import org.openrdf.query.GraphQueryResult;
-import org.openrdf.query.QueryLanguage;
-import org.openrdf.query.QueryResults;
-import org.openrdf.query.TupleQuery;
+import org.openrdf.query.*;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.quartz.jobs.ee.jms.SendDestinationMessageJob;
@@ -18,42 +18,20 @@ import com.complexible.stardog.api.GraphQuery;
 import com.complexible.stardog.sesame.StardogRepository;
 
 
-
 public class ConnectionTest {
 
-	public static void main(final String[] args) {
-		final String server = "snarl://localhost:5820/";
-		try {
-//			final Connection aConn = ConnectionConfiguration.to("myFamily")
-//					.credentials("admin", "admin")
-//					.server(server)
-//					.connect();
-			
-			//aConn.begin();
-			
-//			GraphQuery gq = aConn.graph("select * where {?s a <http://www.sila.com/family#Child>}");
-//			GraphQueryResult gqr = gq.execute();
-			Repository repo = new StardogRepository(ConnectionConfiguration.to("myFamily")
-					.credentials("admin", "admin")
-					.server(server));
-			repo.initialize();
+    public static void main(final String[] args) {
 
-			// now you can use it like a normal Sesame Repository
-			RepositoryConnection aRepoConn = repo.getConnection();
+        IOResult<Exception, TupleQueryResult> aResult= null;
 
-			// always best to turn off auto commit
-			aRepoConn.setAutoCommit(false);
-			
-			org.openrdf.query.GraphQuery gq = aRepoConn.prepareGraphQuery(QueryLanguage.SPARQL, "select * where {?s a <http://www.sila.com/family#Child>}");
-			GraphQueryResult gqr = gq.evaluate();
-			QueryResults.stream(gqr).forEach(s -> System.out.println(s.getSubject().stringValue()));
-			
-			//aConn.commit();
+        Transactional.doSelectInTransaction(conn -> {
+            IOResult.success((TupleQueryResult) conn.select("select * where { ?s <http://www.sila.com/family#hasChild> ?o }"));
+        });
 
-		} catch (final StardogException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
+        if (aResult.isSuccess()) {
+            while (aResult.getResult().hasNext()) {
+                System.out.print("=======" + aResult.getResult().next().getBinding("o").getValue());
+            }
+        }
+    }
 }

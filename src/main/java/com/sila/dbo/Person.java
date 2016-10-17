@@ -1,54 +1,43 @@
 package com.sila.dbo;
 
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.jena.ext.com.google.common.collect.Lists;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.Resource;
+
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
-public class Person extends PersistantDBO {
+@EqualsAndHashCode(callSuper = true)
+public class Person extends PersistentDBO {
 
-	private Person(String key){
-		this.setKey(key);
+	public Person(String personURI){
+		super(personURI);
 	}
 	
+	private HashMap<String, Property> relations = new HashMap<>();
+
 	private String name;
 
-	private HashMap<String, Relationship> relations = new HashMap<>();
-
-	public String getName() {
-		return name;
+	public void addRelation(final String personURI,final Property relation) {
+		relations.put(personURI, relation);
 	}
 
-	public void setName(final String name) {
-		this.name = name;
+	public void removeRelation(final String personURI) {
+		relations.remove(personURI);
 	}
 
-	public void addRelation(final Relationship relation, final Person person) {
-		relations.put(person.getKey(), relation);
-	}
+	public Property getRelationByPerson(final String personUri) { return relations.get(personUri); }
 
-	public void removeRelation(final Person person) {
-		relations.remove(person.getKey());
+	public List<Pair<String,Property>> listRelations() {
+		return relations.entrySet()
+				.stream()
+				.map(entry -> Pair.of(entry.getKey(),entry.getValue()))
+				.collect(Collectors.toList());
 	}
-	
-	public static class PersonBuilder {
-		
-		private Person person;
-		
-		public PersonBuilder(String key){
-			this.person = new Person(key);
-		}
-		
-		public PersonBuilder withName(String name){
-			this.person.setName(name);
-			return this;
-		}
-		
-		public PersonBuilder withRelation(Relationship rel,Person person){
-			this.person.addRelation(rel, person);
-			return this;
-		}
-		
-		public Person build(){
-			return this.person;
-		}
-	}
-
 }
