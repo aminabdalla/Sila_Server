@@ -1,15 +1,16 @@
 package com.sila.dao;
 
+import com.sila.dbo.Person;
 import com.sila.utils.IOResult;
 
 public interface CrudDao<E extends Exception, R extends DBO> {
 
-	IOResult<E, R> delete(DBO dbo);
+	boolean delete(R dbo);
 
-	IOResult<E, R> insert(DBO dbo);
+	IOResult<E, R> insert(R dbo);
 
 	IOResult<E, R> read(String key);
 
-	IOResult<E, R> update(DBO dbo);
+	IOResult<E, R> update(R dbo);
 
 }

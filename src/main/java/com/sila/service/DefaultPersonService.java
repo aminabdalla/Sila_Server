@@ -19,13 +19,13 @@ public class DefaultPersonService implements PersonService {
 	}
 
 	@Override
-	public IOResult<Exception, Person> delete(final DBO dbo) {
+	public boolean delete(final Person dbo) {
 		return personDao.delete(dbo);
 	}
 
 	@Override
-	public IOResult<Exception, Person> insert(final DBO dbo) {
-		return personDao.insert(dbo);
+	public IOResult<Exception, Person> insert(final Person dbo) {
+		return personDao.insert(new Person(""));
 	}
 
 	@Override
@@ -34,7 +34,7 @@ public class DefaultPersonService implements PersonService {
 	}
 
 	@Override
-	public IOResult<Exception, Person> update(final DBO dbo) {
+	public IOResult<Exception, Person> update(final Person dbo) {
 		return personDao.update(dbo);
 	}
 

@@ -22,6 +22,7 @@ public class ServerApplication {
 		for (final String beanName : beanNames) {
 			System.out.println(beanName);
 		}
+
 	}
 
 }

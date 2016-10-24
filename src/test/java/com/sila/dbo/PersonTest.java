@@ -1,11 +1,9 @@
 package com.sila.dbo;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.jena.atlas.lib.tuple.Tuple;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.impl.PropertyImpl;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,28 +30,28 @@ public class PersonTest {
     @Test
     public void ifRelationisAddeditIsFoundAgain(){
         Person person = new Person(personUri);
-        person.addRelation(relatedPersonUri,relationShip);
+        person.addProperty(relatedPersonUri,relationShip);
         assertThat(person)
-                .extracting(p -> p.getRelationByPerson(relatedPersonUri))
+                .extracting(p -> p.getPropertyByPerson(relatedPersonUri))
                 .contains(relationShip);
     }
 
     @Test
     public void ifRelationisRemoveditIsNotThere(){
         Person person = new Person(personUri);
-        person.addRelation(relatedPersonUri,relationShip);
-        person.removeRelation(relatedPersonUri);
+        person.addProperty(relatedPersonUri,relationShip);
+        person.removeProperty(relatedPersonUri);
         assertThat(person)
-                .extracting(p -> p.getRelationByPerson(relatedPersonUri))
+                .extracting(p -> p.getPropertyByPerson(relatedPersonUri))
                 .doesNotContain(relationShip);
     }
     
     @Test
     public void iflistRelationsIsCalledRelationsAreReturned(){
         Person person = new Person(personUri);
-        person.addRelation(relatedPersonUri,relationShip);
-        person.addRelation(anotherRelatedPerson,relationShip);
-        List<String> persons = person.listRelations()
+        person.addProperty(relatedPersonUri,relationShip);
+        person.addProperty(anotherRelatedPerson,relationShip);
+        List<String> persons = person.listProperties()
                 .stream()
                 .map(p -> p.toString())
                 .collect(Collectors.toList());
