@@ -1,11 +1,11 @@
 package com.sila.dao;
 
-import com.complexible.stardog.api.Adder;
 import com.complexible.stardog.api.Connection;
 import com.complexible.stardog.api.SelectQuery;
 import com.complexible.stardog.api.UpdateQuery;
 import com.sila.dbo.Person;
 import com.sila.utils.IOResult;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
@@ -15,12 +15,12 @@ import org.openrdf.query.TupleQueryResult;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Slf4j
+@Data
 public class DefaultPersonDao implements PersonDAO {
 
-    Connection connection;
+    private Connection connection;
     private String SPARQL_SELECT_QUERY = "select * where { %s ?p ?o . ?o rdf:type <http://www.sila.com/family#Person>}";
     private String SPARQL_INSERT_PERSON_QUERY = "INSERT DATA { %s rdf:type <http://www.sila.com/family#Person>}";
     private String SPARQL_INSERT_PERSON_PROPERTIES_QUERY = "INSERT DATA { %s <%s> %s}";
@@ -33,14 +33,20 @@ public class DefaultPersonDao implements PersonDAO {
 
     @Override
     public boolean delete(Person dbo) {
-        UpdateQuery result = connection.update(String.format(SPARQL_DELETE_PERSON, dbo.getUri()));
-        result.execute();
-        return false;
+        try {
+            UpdateQuery result = connection.update(String.format(SPARQL_DELETE_PERSON, dbo.getUri()));
+            result.execute();
+            return true;
+        } catch(Exception e) {
+            log.error("Unable to delete entity:{}",dbo.getUri());
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override
-    public IOResult<Exception, Person> insert(Person dbo) {
-//        if(wasSuccess(connection.update(SPARQL_INSERT_PERSON_QUERY,dbo.getUri()))){
+    public boolean insert(Person dbo) {
+        try{
         UpdateQuery result = connection.update(String.format(SPARQL_INSERT_PERSON_QUERY, dbo.getUri()));
         List<UpdateQuery> propertyUpdate = dbo.listProperties().stream().flatMap(person ->
                 person.getRight().stream().map(property ->
@@ -48,10 +54,13 @@ public class DefaultPersonDao implements PersonDAO {
                 )).collect(Collectors.toList());
         propertyUpdate.stream().forEach(query -> query.execute());
         result.execute();
-        return IOResult.success(dbo);
-//        };
-//        return IOResult.error(new IllegalArgumentException("Unable to insert person"));
-        };
+        return true;
+        } catch(Exception e) {
+            log.error("Unable to insert entity:{}",dbo.getUri());
+            e.printStackTrace();
+            return false;
+        }
+    }
 
     private boolean wasSuccess(UpdateQuery update) {
         return false;
@@ -69,8 +78,9 @@ public class DefaultPersonDao implements PersonDAO {
     }
 
     @Override
-    public IOResult<Exception, Person> update(Person dbo) {
-        return null;
+    public boolean update(Person dbo) {
+        delete(dbo);
+        return insert(dbo);
     }
 
     private IOResult<Exception,Person> getPersonFromQueryResult(String uri,TupleQueryResult queryResult) {
@@ -81,7 +91,7 @@ public class DefaultPersonDao implements PersonDAO {
                 BindingSet nextRow = queryResult.next();
                 Property prop = model.getProperty(nextRow.getBinding("p").getValue().stringValue());
                 String obj = nextRow.getBinding("o").getValue().stringValue();
-                person.addProperty(obj, prop);
+                person.addProperty("<" + obj + ">", prop);
             }
         return IOResult.success(person);
         }

@@ -23,9 +23,11 @@ public class PersonServiceTest {
 	private static final String PERSON_NAME = "The_persons_name";
 	private DefaultPersonService personService;
 	private Person person;
-	private IOResult<Exception, Person> result;
+	private IOResult<Exception, Person> personResult;
+	private boolean result;
 	@Mock
 	private PersonDAO personDao;
+	private boolean updateResult;
 
 	@Before
 	public void setUp() {
@@ -37,7 +39,7 @@ public class PersonServiceTest {
 	public void insertPersonSuccessTest() {
 		givenAPerson();
 		whenPersonIsInsertedSuccessfully();
-		thenReturnedResultIsSuccessAndPersonObjectIsReturned();
+		thenReturnedResultIsSuccess();
 	}
 
 	@Test
@@ -54,12 +56,28 @@ public class PersonServiceTest {
 		thenPersonIsReturnedSuccessfully();
 	}
 
+	@Test
+	public void updatePersonSuccessTest(){
+		givenAPersonExistsInDB();
+		whenPersonIsUpdated();
+		thenTheUpdateReturnsSuccesfully();
+	}
+
+	private void thenTheUpdateReturnsSuccesfully() {
+		assertThat(updateResult).isTrue();
+	}
+
+	private void whenPersonIsUpdated() {
+		Mockito.when(personDao.update(Mockito.any())).thenReturn(true);
+		updateResult = personDao.update(person);
+	}
+
 	private void thenPersonIsReturnedSuccessfully() {
-		assertThat(result.getResult()).isEqualTo(person);
+		assertThat(personResult.getResult()).isEqualTo(person);
 	}
 
 	private void whenPersonIsQueriedFor() {
-		result = personService.read(person.getUri());
+		personResult = personService.read(person.getUri());
 	}
 
 	private void givenAPersonExistsInDB() {
@@ -67,12 +85,12 @@ public class PersonServiceTest {
 	}
 
 	private void thenReturnedResultIsInError() {
-		assertThat(result.isSuccess()).isFalse();
+		assertThat(result).isFalse();
 	}
 
 	private void whenPersonIsInsertedWithAnError() {
 		Mockito.when(personDao.insert(Mockito.anyObject())).thenReturn(
-				IOResult.error(new RuntimeException()));
+				false);
 		result = personService.insert(person);
 	}
 
@@ -80,14 +98,12 @@ public class PersonServiceTest {
 		person = new Person(PERSON_NAME);
 	}
 
-	private void thenReturnedResultIsSuccessAndPersonObjectIsReturned() {
-		MatcherAssert.assertThat(result.isSuccess(), Matchers.is(true));
-		MatcherAssert.assertThat(result.getResult(), Matchers.is(person));
+	private void thenReturnedResultIsSuccess() {
+		assertThat(result).isTrue();
 	}
 
 	private void whenPersonIsInsertedSuccessfully() {
-		Mockito.when(personDao.insert(Mockito.anyObject())).thenReturn(
-				IOResult.success(person));
+		Mockito.when(personDao.insert(Mockito.anyObject())).thenReturn(true);
 		result = personService.insert(person);
 	}
 }

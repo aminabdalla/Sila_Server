@@ -3,7 +3,6 @@ package com.sila.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.sila.dao.DBO;
 import com.sila.dao.PersonDAO;
 import com.sila.dbo.Person;
 import com.sila.utils.IOResult;
@@ -24,7 +23,7 @@ public class DefaultPersonService implements PersonService {
 	}
 
 	@Override
-	public IOResult<Exception, Person> insert(final Person dbo) {
+	public boolean insert(final Person dbo) {
 		return personDao.insert(new Person(""));
 	}
 
@@ -34,7 +33,7 @@ public class DefaultPersonService implements PersonService {
 	}
 
 	@Override
-	public IOResult<Exception, Person> update(final Person dbo) {
+	public boolean update(final Person dbo) {
 		return personDao.update(dbo);
 	}
 
