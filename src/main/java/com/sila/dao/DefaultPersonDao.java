@@ -6,11 +6,13 @@ import com.complexible.stardog.api.UpdateQuery;
 import com.sila.dbo.Person;
 import com.sila.utils.IOResult;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.TupleQueryResult;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -18,9 +20,11 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Data
+@Component
+@NoArgsConstructor
 public class DefaultPersonDao implements PersonDAO {
 
-    private Connection connection;
+    private Connection connection = ConnectionSupplier.returnConnection();
     private String SPARQL_SELECT_QUERY = "select * where { %s ?p ?o . ?o rdf:type <http://www.sila.com/family#Person>}";
     private String SPARQL_INSERT_PERSON_QUERY = "INSERT DATA { %s rdf:type <http://www.sila.com/family#Person>}";
     private String SPARQL_INSERT_PERSON_PROPERTIES_QUERY = "INSERT DATA { %s <%s> %s}";

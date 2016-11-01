@@ -1,5 +1,7 @@
 package com.sila.utils;
 
+import org.springframework.stereotype.Component;
+
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
@@ -101,6 +103,13 @@ public class IOResult<E, R> {
 			throw new NoSuchElementException("No value present");
 		}
 		return result;
+	}
+
+	public E getError() {
+		if (error == null) {
+			throw new NoSuchElementException("No value present");
+		}
+		return error;
 	}
 
 	/**

@@ -1,5 +1,8 @@
 package com.sila.service;
 
+import com.sila.dao.ConnectionSupplier;
+import com.sila.dao.DefaultPersonDao;
+import com.sila.vocabulary.Family;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +13,7 @@ import com.sila.utils.IOResult;
 @Service
 public class DefaultPersonService implements PersonService {
 
-	private final PersonDAO personDao;
+	private PersonDAO personDao;
 
 	@Autowired
 	public DefaultPersonService(final PersonDAO personDao) {
@@ -29,12 +32,16 @@ public class DefaultPersonService implements PersonService {
 
 	@Override
 	public IOResult<Exception, Person> read(final String key) {
-		return personDao.read(key);
+		return personDao.read(buildUri(key));
 	}
 
 	@Override
 	public boolean update(final Person dbo) {
 		return personDao.update(dbo);
+	}
+
+	private String buildUri(String key) {
+		return "<"+ Family.NAMESPACE + key +">";
 	}
 
 }
