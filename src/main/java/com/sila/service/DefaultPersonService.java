@@ -3,14 +3,20 @@ package com.sila.service;
 import com.sila.dao.ConnectionSupplier;
 import com.sila.dao.DefaultPersonDao;
 import com.sila.vocabulary.Family;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.sila.dao.PersonDAO;
 import com.sila.dbo.Person;
 import com.sila.utils.IOResult;
 
+
+@Setter
 @Service
+@Component
 public class DefaultPersonService implements PersonService {
 
 	private PersonDAO personDao;

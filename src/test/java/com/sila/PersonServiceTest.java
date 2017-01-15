@@ -1,5 +1,6 @@
 package com.sila;
 
+import com.sila.dao.DefaultPersonDao;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Before;

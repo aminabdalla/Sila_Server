@@ -12,6 +12,7 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.TupleQueryResult;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -41,8 +42,8 @@ public class DefaultPersonDao implements PersonDAO {
             UpdateQuery result = connection.update(String.format(SPARQL_DELETE_PERSON, dbo.getUri()));
             result.execute();
             return true;
-        } catch(Exception e) {
-            log.error("Unable to delete entity:{}",dbo.getUri());
+        } catch (Exception e) {
+            log.error("Unable to delete entity:{}", dbo.getUri());
             e.printStackTrace();
             return false;
         }
@@ -50,17 +51,17 @@ public class DefaultPersonDao implements PersonDAO {
 
     @Override
     public boolean insert(Person dbo) {
-        try{
-        UpdateQuery result = connection.update(String.format(SPARQL_INSERT_PERSON_QUERY, dbo.getUri()));
-        List<UpdateQuery> propertyUpdate = dbo.listProperties().stream().flatMap(person ->
-                person.getRight().stream().map(property ->
-                        connection.update(String.format(SPARQL_INSERT_PERSON_PROPERTIES_QUERY, dbo.getUri(), property, person.getKey()))
-                )).collect(Collectors.toList());
-        propertyUpdate.stream().forEach(query -> query.execute());
-        result.execute();
-        return true;
-        } catch(Exception e) {
-            log.error("Unable to insert entity:{}",dbo.getUri());
+        try {
+            UpdateQuery result = connection.update(String.format(SPARQL_INSERT_PERSON_QUERY, dbo.getUri()));
+            List<UpdateQuery> propertyUpdate = dbo.listProperties().stream().flatMap(person ->
+                    person.getRight().stream().map(property ->
+                            connection.update(String.format(SPARQL_INSERT_PERSON_PROPERTIES_QUERY, dbo.getUri(), property, person.getKey()))
+                    )).collect(Collectors.toList());
+            propertyUpdate.stream().forEach(query -> query.execute());
+            result.execute();
+            return true;
+        } catch (Exception e) {
+            log.error("Unable to insert entity:{}", dbo.getUri());
             e.printStackTrace();
             return false;
         }
@@ -73,10 +74,10 @@ public class DefaultPersonDao implements PersonDAO {
     @Override
     public IOResult<Exception, Person> read(String key) {
         try {
-            SelectQuery l = connection.select(String.format(SPARQL_SELECT_QUERY,key));
-            return getPersonFromQueryResult(key,(TupleQueryResult) l.execute());
-        } catch (Exception e){
-            log.error("Could no read person with uri: {}",key);
+            SelectQuery l = connection.select(String.format(SPARQL_SELECT_QUERY, key));
+            return getPersonFromQueryResult(key, (TupleQueryResult) l.execute());
+        } catch (Exception e) {
+            log.error("Could no read person with uri: {}", key);
             return IOResult.error(e);
         }
     }
@@ -87,8 +88,8 @@ public class DefaultPersonDao implements PersonDAO {
         return insert(dbo);
     }
 
-    private IOResult<Exception,Person> getPersonFromQueryResult(String uri,TupleQueryResult queryResult) {
-        if(queryResult.hasNext()) {
+    private IOResult<Exception, Person> getPersonFromQueryResult(String uri, TupleQueryResult queryResult) {
+        if (queryResult.hasNext()) {
             Person person = new Person(uri);
             Model model = ModelSupplier.supplyModel();
             while (queryResult.hasNext()) {
@@ -97,7 +98,7 @@ public class DefaultPersonDao implements PersonDAO {
                 String obj = nextRow.getBinding("o").getValue().stringValue();
                 person.addProperty("<" + obj + ">", prop);
             }
-        return IOResult.success(person);
+            return IOResult.success(person);
         }
         return IOResult.error(new NoSuchElementException("Unkown Person"));
     }

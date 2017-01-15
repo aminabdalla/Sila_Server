@@ -1,6 +1,10 @@
 package com.sila.controller;
 
+import com.sila.dao.DefaultPersonDao;
+import com.sila.dao.PersonDAO;
+import com.sila.service.PersonService;
 import com.sila.utils.IOResult;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.jboss.logging.Param;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +20,7 @@ import com.sila.service.DefaultPersonService;
 @RestController
 @Slf4j
 @RequestMapping("/Person")
+@Data
 public class PersonController {
 
 	@Autowired

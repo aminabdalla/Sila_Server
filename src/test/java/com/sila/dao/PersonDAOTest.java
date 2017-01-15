@@ -20,7 +20,7 @@ public class PersonDAOTest {
     private String personUri = "<http://www.sila.com/family#AminAbdalla>";
     private static String AHMED_ABDALLA = "<http://www.sila.com/family#AhmadAbdalla>";
     IOResult<Exception, Person> personResult;
-    String relatedPersonUri = "http://www.sila.com/family#HabibaAbdalla";
+    String relatedPersonUri = "<http://www.sila.com/family#HabibaAbdalla>";
     Connection conn;
     Model model = ModelSupplier.supplyModel();
     Person insertPerson = getInsertPerson();
